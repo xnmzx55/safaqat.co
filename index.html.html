@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>صفقات</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;500;700&family=IBM+Plex+Sans+Arabic:wght@400;500;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--fg:#1d2a2c;--mut:#6a7679;--line:#e6ebeb;--pri:#1d5bb5;--pri-d:#154690;--acc:#f28c1e;--card:#f6f8f8;--red:#b3402f;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121819;--fg:#e8eeee;--mut:#98a5a7;--line:#263032;--pri:#5b9bf0;--pri-d:#86b4f5;--card:#1a2224;--red:#e07a69}}
+:root[data-theme="dark"]{--bg:#121819;--fg:#e8eeee;--mut:#98a5a7;--line:#263032;--pri:#5b9bf0;--pri-d:#86b4f5;--card:#1a2224;--red:#e07a69}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 var(--fs)/1.7 var(--font)}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.demo{background:var(--acc);color:var(--onacc);text-align:center;padding:6px 12px;font-size:14px}
+header{display:flex;gap:12px;align-items:center;padding:14px 5%;border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);background:var(--hdr-bg);color:var(--hdr-fg);z-index:5;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:26px;color:var(--logo-c);text-decoration:none}.lgi{height:var(--lh);width:auto;max-width:180px;object-fit:contain}.lgi.rd{border-radius:50%}
+.search{flex:1;min-width:180px}
+.search input{width:100%;padding:10px 16px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.ib{background:none;border:1px solid color-mix(in srgb,currentColor 30%,transparent);border-radius:var(--br);padding:8px 14px;position:relative}
+.ib b{background:var(--acc);color:var(--onacc);border-radius:99px;padding:0 7px;font-size:13px;margin-inline-start:6px}
+.hero{padding:56px 5%;background:var(--hero-bg);color:var(--hero-fg)}
+.hero h1{font-size:clamp(30px,5vw,52px);line-height:1.25;margin:0 0 12px;max-width:16em}
+.hero p{margin:0 0 20px;max-width:34em;opacity:.9}
+.btn{background:var(--pri);color:var(--onpri);border:0;border-radius:var(--br);padding:11px 22px;font-weight:500}
+.btn:hover{background:var(--pri-d)}
+.btn.w{background:var(--hero-fg);color:var(--hero-s)}
+.btn.o{background:none;color:var(--fg);border:1px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.perks{display:flex;gap:24px;flex-wrap:wrap;padding:18px 5%;border-bottom:1px solid var(--line);color:var(--mut);font-size:14px}
+main{padding:28px 5% 48px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+.chip{border:1px solid var(--line);background:none;border-radius:99px;padding:6px 16px}
+.chip[aria-pressed=true]{background:var(--pri);color:var(--onpri);border-color:var(--pri)}
+select{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--gmin),1fr));gap:20px}
+.card{border:var(--cb);box-shadow:var(--sh);border-radius:var(--r);overflow:hidden;background:var(--cbg);display:flex;flex-direction:column}
+.img{aspect-ratio:var(--ar);display:grid;place-items:center;font-size:64px;cursor:pointer;position:relative}
+.tag{position:absolute;top:10px;inset-inline-start:10px;background:var(--red);color:#fff;font-size:13px;padding:0 10px;border-radius:99px}
+.fav{position:absolute;top:8px;inset-inline-end:8px;background:var(--bg);border:0;border-radius:99px;width:34px;height:34px;font-size:18px}
+.info{padding:14px;display:flex;flex-direction:column;gap:4px;flex:1}
+.info h3{margin:0;font-size:16px;font-weight:500;cursor:pointer}
+.stars{color:var(--acc);font-size:14px}.stars span{color:var(--mut)}
+.price{font-weight:700}.old{color:var(--mut);text-decoration:line-through;font-weight:400;font-size:14px;margin-inline-start:8px}
+.info .btn{margin-top:auto}
+.empty{text-align:center;color:var(--mut);padding:48px 0}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:20}
+.ov.on{display:flex}
+.drawer{background:var(--bg);width:min(440px,100%);height:100%;overflow:auto;padding:22px;display:flex;flex-direction:column;gap:14px}
+.modal{background:var(--bg);margin:auto;width:min(720px,94%);max-height:92%;overflow:auto;border-radius:16px;padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:620px){.modal{grid-template-columns:1fr}}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding:10px 0}
+.q{display:flex;align-items:center;gap:8px}.q button{width:28px;height:28px;border:1px solid var(--line);background:none;border-radius:8px}
+.sum div{display:flex;justify-content:space-between;padding:3px 0}
+label{display:block;font-size:14px;color:var(--mut);margin-top:10px}
+.f{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.f.bad{border-color:var(--red)}.err{color:var(--red);font-size:13px;min-height:18px}
+.toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));inset-inline-start:50%;transform:translateX(50%);background:var(--fg);color:var(--bg);padding:10px 20px;border-radius:10px;z-index:40;display:none}
+footer{text-align:center;padding:28px 5%;border-top:1px solid var(--line);background:var(--ftr-bg);color:var(--ftr-fg);font-size:14px}
+.pg{position:fixed;inset:0;background:var(--bg);overflow:auto;z-index:30;display:none}.pg.on{display:block}
+.admw{max-width:1000px;margin:0 auto;padding:24px 5%}.admh{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.note{background:var(--card);border:1px solid var(--acc);border-radius:10px;padding:10px 14px;font-size:14px;margin-bottom:16px}
+.login{max-width:360px;margin:12vh auto}.stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.stats div{flex:1;min-width:110px;background:var(--card);border-radius:12px;padding:10px 14px;font-size:14px;color:var(--mut)}.stats b{display:block;font-size:22px;color:var(--fg)}
+.pf{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:24px}.pf .full{grid-column:1/-1}
+@media(max-width:620px){.pf{grid-template-columns:1fr}}
+.pv{width:110px;height:110px;border-radius:12px;background:var(--card);display:grid;place-items:center;overflow:hidden;color:var(--mut);font-size:13px}
+.tbw{overflow-x:auto}.tb{width:100%;border-collapse:collapse}.tb th,.tb td{padding:8px;border-bottom:1px solid var(--line);text-align:start;font-size:14px}
+.th{width:44px;height:44px;border-radius:8px;overflow:hidden;background:var(--card);display:grid;place-items:center}
+.btn.ig{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:linear-gradient(135deg,var(--pri),var(--pri-d));color:var(--onpri);text-decoration:none;font-weight:700;padding:13px 22px}.btn.ig:hover{filter:brightness(1.08)}
+:root{--font:"IBM Plex Sans Arabic",Tahoma,sans-serif;--fs:16px;--r:14px;--br:10px;--lh:44px;--gmin:210px;--ar:1;--sh:none;--cb:1px solid var(--line);--cbg:var(--bg);--onpri:#fff;--onacc:#10151f;--hdr-bg:var(--bg);--hdr-fg:var(--fg);--logo-c:var(--pri);--hero-bg:var(--pri);--hero-fg:#fff;--hero-s:var(--pri);--ftr-bg:var(--bg);--ftr-fg:var(--mut)}
+.search input{color:var(--fg)}a:not(.btn):not(.logo){color:var(--pri)}
+.thg{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}@media(max-width:760px){.thg{grid-template-columns:1fr}}
+.thc{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;align-content:start}.thc .full{grid-column:1/-1}.thp{position:sticky;top:12px;align-self:start}
+.prev{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg);color:var(--fg);font:400 var(--fs)/1.7 var(--font)}
+.prev header{position:static}.prev .hero{padding:22px 5%}.prev .hero h1{font-size:22px}.prev .hero p{font-size:14px}.prev main{padding:14px 5%}.prev footer{padding:14px 5%}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="#" id="home" aria-label="صفقات – الصفحة الرئيسية"><img class="lgi" alt=""><span>صفقات</span></a>
+  <div class="search"><input id="q" type="search" placeholder="ابحث عن منتج أو تصنيف…" aria-label="بحث"></div>
+  <button class="ib" id="favBtn" aria-pressed="false">♥ المفضلة<b id="favN">0</b></button>
+  <button class="ib" id="cartBtn">🛒 السلة<b id="cartN">0</b></button>
+</header>
+<section class="hero">
+  <h1>كل اللي تحتاجه في مكان واحد! ⚡📱</h1>
+  <p>اكتشف أحدث الإلكترونيات والإكسسوارات ومنتجات متنوعة تجمع بين الجودة والسعر المناسب، وتسوق بكل سهولة.</p>
+  <button class="btn w" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">تسوّق الآن</button>
+</section>
+<div class="perks"><span>توصيل مجاني فوق 25 ر.ع.</span><span>اطلب بسهولة عبر إنستغرام</span><span>استبدال خلال 7 أيام</span></div>
+<main id="shop">
+  <div class="bar" id="cats" role="group" aria-label="التصنيفات"></div>
+  <div class="bar">
+    <select id="sort" aria-label="الترتيب">
+      <option value="new">الأحدث</option><option value="best">الأكثر مبيعًا</option>
+      <option value="lo">السعر: من الأقل</option><option value="hi">السعر: من الأعلى</option><option value="rate">الأعلى تقييمًا</option>
+    </select>
+    <label style="margin:0"><input type="checkbox" id="stock"> المتوفر فقط</label>
+    <span id="count" style="color:var(--mut)"></span>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+<footer id="ft"><img class="lgi" id="fl" alt="" style="height:32px;margin-inline-end:10px;vertical-align:middle"><span style="font-weight:700;font-size:20px;vertical-align:middle;color:var(--logo-c);user-select:none">صفقات</span></footer>
+
+<div class="ov" id="cartOv"><aside class="drawer" role="dialog" aria-label="السلة" id="cartBox"></aside></div>
+<div class="ov" id="prodOv"><div class="modal" role="dialog" id="prodBox"></div></div>
+<div class="pg" id="adm"><div class="admw" id="admBox"></div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+let P=[
+{id:1,n:"سماعات بلوتوث لاسلكية",c:"إلكترونيات",p:8.5,o:12,s:30,r:4.7,rc:41,e:"🎧",bg:"#e3ecfa",d:"صوت نقي وبطارية تدوم طويلًا مع ميكروفون مدمج.",b:110,t:8},
+{id:2,n:"ساعة ذكية رياضية",c:"إلكترونيات",p:14,o:19,s:15,r:4.5,rc:23,e:"⌚",bg:"#e8eef7",d:"تتبع النشاط والنوم والإشعارات بشاشة واضحة.",b:80,t:7},
+{id:3,n:"جهاز عرض صغير (بروجكتر)",c:"إلكترونيات",p:45,o:58,s:6,r:4.6,rc:12,e:"📽️",bg:"#dfe7f3",d:"شاهد أفلامك على شاشة كبيرة في أي غرفة.",b:35,t:6},
+{id:4,n:"باور بانك 20000 mAh",c:"إكسسوارات",p:9,s:40,r:4.8,rc:36,e:"🔋",bg:"#fdebd3",d:"شحن سريع لجهازين في وقت واحد.",b:95,t:5},
+{id:5,n:"شاحن سريع 65 واط",c:"إكسسوارات",p:6.5,s:0,r:4.4,rc:17,e:"🔌",bg:"#e6edf6",d:"يشحن الجوال واللابتوب بكفاءة وأمان.",b:60,t:4},
+{id:6,n:"كفر حماية للجوال",c:"إكسسوارات",p:2.5,o:4,s:80,r:4.3,rc:29,e:"📱",bg:"#fbe3c6",d:"حماية من السقوط مع تصميم نحيف.",b:70,t:3},
+{id:7,n:"مصباح مكتب LED",c:"منزل",p:7,s:22,r:4.6,rc:14,e:"💡",bg:"#fdf0cf",d:"إضاءة قابلة للتعديل تريح العين.",b:40,t:2},
+{id:8,n:"غلاية كهربائية ذكية",c:"منزل",p:11,o:14,s:12,r:4.5,rc:18,e:"♨️",bg:"#e4ecf5",d:"تسخين سريع مع ضبط درجة الحرارة.",b:30,t:1}];
+try{const sp=JSON.parse(localStorage.getItem("products")||"null");if(Array.isArray(sp))P=sp}catch(e){}
+const COUPON={DEMO10:.1};const SHIP={"مسقط":1.5,"ظفار":3,"شمال الباطنة":2,"جنوب الشرقية":2.5,"أخرى":3.5};
+const $=s=>document.querySelector(s);const f3=n=>n.toFixed(3)+" ر.ع.";
+let cart={},favs=[],cat="الكل",term="",coupon=null,placing=false;
+try{cart=JSON.parse(localStorage.getItem("cart")||"{}");favs=JSON.parse(localStorage.getItem("favs")||"[]")}catch(e){}
+const save=()=>{try{localStorage.setItem("cart",JSON.stringify(cart));localStorage.setItem("favs",JSON.stringify(favs))}catch(e){}};
+const norm=s=>s.replace(/[\u064B-\u065F\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي").trim().toLowerCase();
+function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display="none",2200)}
+function stars(r,c){return `<div class="stars" aria-label="${r} من 5">${"★".repeat(Math.round(r))}${"☆".repeat(5-Math.round(r))} <span>(${c})</span></div>`}
+let showFav=false;
+function list(){let a=P.filter(x=>!x.h&&(cat==="الكل"||x.c===cat)&&(!showFav||favs.includes(x.id))&&(!$("#stock").checked||x.s>0)&&(!term||norm(x.n+" "+x.c+" "+x.d).includes(norm(term))));
+const k=$("#sort").value;a.sort((x,y)=>k==="lo"?x.p-y.p:k==="hi"?y.p-x.p:k==="best"?y.b-x.b:k==="rate"?y.r-x.r:y.t-x.t);return a}
+function render(){
+clean();const cats=["الكل",...new Set(P.filter(x=>!x.h).map(x=>x.c))];
+$("#cats").innerHTML=cats.map(c=>`<button class="chip" aria-pressed="${c===cat}" data-c="${c}">${c}</button>`).join("");
+const a=list();$("#count").textContent=a.length+" منتج";
+$("#grid").innerHTML=a.length?a.map(x=>`<article class="card"><div class="img" style="background:${x.bg}" data-o="${x.id}">${im(x)}${x.o?`<span class="tag">-${Math.round((1-x.p/x.o)*100)}%</span>`:x.b>=100?`<span class="tag" style="background:var(--pri)">الأكثر مبيعًا</span>`:""}<button class="fav" data-f="${x.id}" aria-label="مفضلة">${favs.includes(x.id)?"♥":"♡"}</button></div>
+<div class="info"><h3 data-o="${x.id}">${x.n}</h3>${stars(x.r,x.rc)}<div><span class="price">${f3(x.p)}</span>${x.o?`<span class="old">${f3(x.o)}</span>`:""}</div>
+<button class="btn" data-a="${x.id}" ${x.s?"":"disabled"}>${x.s?"أضف إلى السلة":"نفدت الكمية"}</button></div></article>`).join(""):`<div class="empty" style="grid-column:1/-1">لا توجد نتائج مطابقة. جرّب كلمة أخرى أو اختر تصنيف «الكل».</div>`;
+$("#cartN").textContent=Object.values(cart).reduce((a,b)=>a+b,0);$("#favN").textContent=favs.length;
+$("#favBtn").setAttribute("aria-pressed",showFav)}
+function add(id,q=1){const p=P.find(x=>x.id==id);const n=(cart[id]||0)+q;if(n>p.s){toast("الكمية المطلوبة غير متوفرة. المتاح: "+p.s);return}cart[id]=n;save();render();toast("أُضيف إلى السلة ✓")}
+function totals(){let sub=0;for(const id in cart){const p=P.find(x=>x.id==id);sub+=p.p*cart[id]}
+const disc=coupon?sub*COUPON[coupon]:0;const city=($("#city")||{}).value||"مسقط";const ship=(sub-disc)>=25||!sub?0:SHIP[city];return{sub,disc,ship,tot:sub-disc+ship}}
+function cartView(){const ids=Object.keys(cart);const t=totals();
+$("#cartBox").innerHTML=`<div class="row" style="border:0"><h2 style="margin:0">السلة</h2><button class="btn o" data-x="cart">إغلاق</button></div>`+
+(ids.length?ids.map(id=>{const p=P.find(x=>x.id==id);return `<div class="row"><div>${p.e} ${p.n}<br><small>${f3(p.p)}</small></div><div class="q"><button data-m="${id}" aria-label="تقليل">−</button><b>${cart[id]}</b><button data-pl="${id}" aria-label="زيادة">+</button></div></div>`}).join("")+
+`<div class="row" style="border:0"><input class="f" id="cp" placeholder="كود الخصم (جرّب DEMO10)" value="${coupon||""}"><button class="btn o" id="cpb">تطبيق</button></div>
+<div class="sum"><div><span>المجموع الفرعي</span><span>${f3(t.sub)}</span></div><div><span>الخصم</span><span>-${f3(t.disc)}</span></div><div><b>الإجمالي (بدون التوصيل)</b><b>${f3(t.sub-t.disc)}</b></div></div>
+<button class="btn ig" id="goCk"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg> اطلب عبر إنستغرام</button>`:`<div class="empty">السلة فارغة. أضف منتجًا لتبدأ.</div>`)}
+function prod(id){const x=P.find(p=>p.id==id);let q=1;
+const draw=()=>{$("#prodBox").innerHTML=`<div class="img" style="background:${x.bg};border-radius:12px;cursor:default;font-size:110px;overflow:hidden">${im(x)}</div>
+<div><h2 style="margin-top:0">${x.n}</h2>${stars(x.r,x.rc)}<p><span class="price" style="font-size:22px">${f3(x.p)}</span>${x.o?`<span class="old">${f3(x.o)}</span>`:""}</p><p>${x.d}</p>
+<p style="color:${x.s?(x.s<6?"var(--red)":"var(--pri)"):"var(--red)"}">${x.s?(x.s<6?"متبقي "+x.s+" فقط":"متوفر"):"نفدت الكمية"}</p>
+<div class="q"><button id="qm">−</button><b>${q}</b><button id="qp">+</button></div><br>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="pa" ${x.s?"":"disabled"}>أضف إلى السلة</button><button class="btn o" id="pb" ${x.s?"":"disabled"}>اشترِ الآن</button><button class="btn o" data-x="prod">إغلاق</button></div>
+<p style="color:var(--mut);font-size:14px">الاستبدال والإرجاع خلال 7 أيام. التوصيل خلال 2–4 أيام عمل.</p></div>`;
+$("#qm").onclick=()=>{q=Math.max(1,q-1);draw()};$("#qp").onclick=()=>{q=Math.min(x.s||1,q+1);draw()};
+$("#pa").onclick=()=>add(x.id,q);$("#pb").onclick=()=>{add(x.id,q);$("#prodOv").classList.remove("on");openCart(true)}};
+draw();$("#prodOv").classList.add("on")}
+function openCart(ck){$("#cartOv").classList.add("on");ck&&Object.keys(cart).length?igView():cartView()}
+document.addEventListener("click",e=>{const t=e.target.closest("button,.img,h3");if(!t)return;const d=t.dataset;
+if(d.c){cat=d.c;render()}else if(d.a)add(d.a);else if(d.o)prod(d.o);
+else if(d.f){const i=+d.f;favs=favs.includes(i)?favs.filter(v=>v!==i):[...favs,i];save();render()}
+else if(d.x){$(d.x==="cart"?"#cartOv":"#prodOv").classList.remove("on")}
+else if(d.m){const i=d.m;if(--cart[i]<=0)delete cart[i];save();render();cartView()}
+else if(d.pl){add(d.pl);cartView()}
+else if(t.id==="cpb"){const c=$("#cp").value.trim().toUpperCase();if(!c){coupon=null}else if(COUPON[c]){coupon=c;toast("تم تطبيق الكوبون")}else toast("الكوبون غير صالح أو منتهي");cartView()}
+else if(t.id==="goCk")igView();else if(t.id==="back")cartView();else if(t.id==="cpy")copySum();});
+$("#home").onclick=e=>{e.preventDefault();$("#adm").classList.remove("on");cat="الكل";term="";showFav=false;$("#q").value="";$("#stock").checked=false;$("#sort").value="new";document.querySelectorAll(".ov").forEach(o=>o.classList.remove("on"));render();window.scrollTo({top:0,behavior:"smooth"})};
+$("#cartBtn").onclick=()=>openCart();$("#favBtn").onclick=()=>{showFav=!showFav;render()};
+$("#q").oninput=e=>{term=e.target.value;render()};$("#sort").onchange=render;$("#stock").onchange=render;
+document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".ov").forEach(o=>o.classList.remove("on"))});
+document.querySelectorAll(".ov").forEach(o=>o.addEventListener("click",e=>{if(e.target===o)o.classList.remove("on")}));
+const LOGO0="data:image/jpeg;base64,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";
+const L0={p:"#2e4693",a:"#af8860"};
+const FONTS={f0:"\"IBM Plex Sans Arabic\",Tahoma,sans-serif",f1:"Cairo,Tahoma,sans-serif",f2:"Tajawal,Tahoma,sans-serif",f3:"Amiri,\"Times New Roman\",serif"};
+const PR=[["light","فاتح"],["modern","عصري"],["minimal","بسيط"],["luxury","فخم"],["dark","داكن"]];
+const hx=c=>[1,3,5].map(i=>parseInt(c.slice(i,i+2),16));
+const rh=a=>"#"+a.map(v=>Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,"0")).join("");
+const mix=(a,b,t)=>{const x=hx(a),y=hx(b);return rh(x.map((v,i)=>v*(1-t)+y[i]*t))};
+const lum=c=>{const[r,g,b]=hx(c).map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*r+.7152*g+.0722*b};
+const on=c=>{const l=lum(c);return(l+.05)/.058>1.05/(l+.05)?"#10151f":"#ffffff"};
+function preset(k,L){const p=L.p,a=L.a,nv=mix(p,"#000000",.62);
+const base={k,m:"light",pri:p,acc:a,bg:"#ffffff",fg:mix(p,"#000000",.78),card:mix(p,"#ffffff",.94),font:"f0",fs:16,r:14,br:10,lh:44,hd:"light",hr:"solid",ft:"light",cs:"outlined",gm:210,ar:"1",L,logo:null};
+const o={light:{},modern:{bg:mix(p,"#ffffff",.96),card:"#ffffff",r:20,br:99,font:"f1",hr:"gradient",cs:"shadow"},
+minimal:{font:"f2",r:4,br:4,hr:"soft",cs:"flat",gm:280,ar:"1.33",fs:15},
+luxury:{m:"dark",pri:mix(p,"#ffffff",.4),bg:nv,fg:"#f3efe6",card:mix(nv,"#ffffff",.07),font:"f3",r:6,br:4,hd:"dark",hr:"gradient",ft:"dark",cs:"flat",ar:"0.8",fs:17},
+dark:{m:"dark",pri:mix(p,"#ffffff",.35),bg:mix(p,"#000000",.82),fg:"#e8eef8",card:mix(p,"#000000",.7),hd:"dark",ft:"dark",cs:"shadow"}};
+return Object.assign(base,o[k]||{})}
+function vars(T){const dk=T.m==="dark",b=T.bg,f=T.fg,ln=mix(f,b,.86),pd=dk?mix(T.pri,"#ffffff",.2):mix(T.pri,"#000000",.2),nv=mix(T.L.p,"#000000",.65);
+const B={light:b,brand:T.pri,dark:nv},hb=B[T.hd],fb=B[T.ft];
+const hero=T.hr==="soft"?T.card:T.hr==="gradient"?`linear-gradient(135deg,${mix(T.pri,"#000000",.35)},${T.pri})`:T.pri;
+const hf=T.hr==="soft"?f:on(T.hr==="gradient"?mix(T.pri,"#000000",.2):T.pri);
+return{"--bg":b,"--fg":f,"--mut":mix(f,b,.42),"--line":ln,"--pri":T.pri,"--pri-d":pd,"--acc":T.acc,"--card":T.card,"--red":dk?"#e07a69":"#b3402f","--onpri":on(T.pri),"--onacc":on(T.acc),"--hdr-bg":hb,"--hdr-fg":T.hd==="light"?f:on(hb),"--logo-c":T.hd==="light"?T.pri:on(hb),"--hero-bg":hero,"--hero-fg":hf,"--hero-s":T.hr==="soft"?T.card:T.pri,"--ftr-bg":fb,"--ftr-fg":T.ft==="light"?mix(f,b,.42):on(fb),"--font":FONTS[T.font]||FONTS.f0,"--fs":T.fs+"px","--r":T.r+"px","--br":T.br+"px","--lh":T.lh+"px","--gmin":T.gm+"px","--ar":T.ar,"--sh":T.cs==="shadow"?"0 8px 24px rgba(0,0,0,.14)":"none","--cb":T.cs==="outlined"?"1px solid "+ln:"none","--cbg":T.cs==="flat"?T.card:b}}
+function applyT(el,T){const v=vars(T);for(const k in v)el.style.setProperty(k,v[k]);el.style.colorScheme=T.m;
+const s=T.logo||LOGO0;el.querySelectorAll?.(".lgi").forEach(i=>{if(i.getAttribute("src")!==s)i.src=s;i.classList.toggle("rd",!T.logo)})}
+const jl=k=>{try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}};
+const js2=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){toast("تعذر الحفظ: المساحة ممتلئة. جرّب لوقو أصغر.");return false}};
+const cl=o=>JSON.parse(JSON.stringify(o));
+const ld=k=>{const x=jl(k);return x?Object.assign(preset("light",L0),x):null};
+let TP=ld("themePub")||preset("light",L0),DR=ld("themeDraft")||cl(TP);
+function applyStore(){applyT(document.documentElement,TP);let f=document.querySelector("link[rel=icon]");if(!f){f=document.createElement("link");f.rel="icon";document.head.appendChild(f)}f.href=TP.logo||LOGO0}
+function palette(src){return new Promise(ok=>{const i=new Image();i.onload=()=>{const c=document.createElement("canvas");c.width=c.height=64;const x=c.getContext("2d");x.drawImage(i,0,0,64,64);const d=x.getImageData(0,0,64,64).data,F=Array.from({length:12},()=>[0,0,0,0]);
+for(let k=0;k<d.length;k+=4){if(d[k+3]<200)continue;const r=d[k],g=d[k+1],b=d[k+2],mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/510;if(mx===mn||l<.15||l>.85)continue;const s=(mx-mn)/255/(1-Math.abs(2*l-1));if(s<.3)continue;
+const dd=mx-mn;const hh=mx===r?((g-b)/dd+6)%6:mx===g?(b-r)/dd+2:(r-g)/dd+4;const f=F[Math.floor(hh*2)%12];f[0]++;f[1]+=r;f[2]+=g;f[3]+=b}
+const tot=F.reduce((a,f)=>a+f[0],0);if(!tot){ok(null);return}
+const m=f=>rh([f[1]/f[0],f[2]/f[0],f[3]/f[0]]);const o=F.map((f,j)=>[f,j]).filter(([f])=>f[0]).sort((a,b)=>b[0][0]-a[0][0]);
+const P=o[0],A=o.find(([f,j])=>{const dj=Math.abs(j-P[1]);return Math.min(dj,12-dj)>=2&&f[0]>tot*.02});
+ok({p:m(P[0]),a:A?m(A[0]):mix(m(P[0]),"#ffffff",.5)})};i.onerror=()=>ok(null);i.src=src})}
+function resizeLogo(f){return new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,320/Math.max(i.width,i.height));const c=document.createElement("canvas");c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);c.getContext("2d").drawImage(i,0,0,c.width,c.height);ok(c.toDataURL("image/png"))};i.onerror=no;i.src=r.result};r.onerror=no;r.readAsDataURL(f)})}
+function pvT(){const p=$("#prev");if(p)applyT(p,DR)}
+function thmView(){const T=DR;
+const sel=(k,l,o)=>`<div><label>${l}</label><select class="f" data-k="${k}">${o.map(([v,n])=>`<option value="${v}" ${String(T[k])===v?"selected":""}>${n}</option>`).join("")}</select></div>`;
+const rng=(k,l,a,b)=>`<div><label>${l}: <span id="v_${k}">${T[k]}</span></label><input type="range" data-k="${k}" data-n="1" min="${a}" max="${b}" value="${T[k]}"></div>`;
+const col=(k,l)=>`<div><label>${l}</label><input type="color" data-k="${k}" value="${T[k]}" style="width:100%;height:38px"></div>`;
+const hs=[["light","فاتح"],["brand","لون الهوية"],["dark","داكن"]];
+$("#thm").innerHTML=`<h3>هوية المتجر والتصميم</h3><div class="thg"><div class="thc">
+<div class="full"><label>أنماط جاهزة (ألوانها مشتقة من اللوقو)</label><div class="bar">${PR.map(([k,n])=>`<button class="chip" data-pr="${k}" aria-pressed="${T.k===k}">${n}</button>`).join("")}</div></div>
+<div class="full"><label>اللوقو (يُحفظ بنسبه الأصلية)</label><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><img class="lgi ${T.logo?"":"rd"}" src="${T.logo||LOGO0}" alt="" style="height:56px"><div><input type="file" id="lgf" accept="image/*"><div style="display:flex;gap:6px;margin-top:6px"><button class="btn o" id="lga">إعادة تحليل ألوانه</button><button class="btn o" id="lgr">اللوقو الأصلي</button></div></div></div></div>
+${col("pri","اللون الأساسي (أزرار وروابط)")}${col("acc","اللون الثانوي (شارات)")}${col("bg","الخلفية")}${col("fg","النصوص")}${col("card","البطاقات والمناطق الهادئة")}
+${sel("m","النمط",[["light","فاتح"],["dark","داكن"]])}
+${sel("font","الخط",[["f0","IBM Plex (حديث)"],["f1","Cairo (عصري)"],["f2","Tajawal (بسيط)"],["f3","Amiri (فخم)"]])}
+${rng("fs","حجم النص",14,19)}${rng("br","استدارة الأزرار",0,30)}${rng("r","استدارة البطاقات",0,28)}${rng("lh","ارتفاع اللوقو",28,72)}
+${sel("hd","الهيدر",hs)}${sel("hr","البانر",[["solid","لون ثابت"],["gradient","تدرج"],["soft","هادئ"]])}${sel("ft","الفوتر",hs)}
+${sel("cs","شكل البطاقة",[["outlined","بإطار"],["shadow","بظل"],["flat","مسطحة"]])}
+${sel("gm","عرض المنتجات",[["160","مدمج"],["210","متوسط"],["280","كبير"]])}${sel("ar","شكل الصورة",[["1","مربعة"],["0.8","طولية"],["1.33","عريضة"]])}
+<div class="full" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="btn o" id="tsave">حفظ التغييرات</button><button class="btn" id="tpub">نشر التصميم</button><button class="btn o" id="trev">استعادة التصميم السابق</button><button class="btn o" id="treset">إعادة الضبط</button></div>
+<div class="full note" style="margin-top:12px">«حفظ التغييرات» يحفظ مسودة لا يراها الزوار. «نشر التصميم» يطبّقها على المتجر كله.</div></div>
+<div class="thp"><label>معاينة مباشرة</label><div class="prev" id="prev"><header><a class="logo"><img class="lgi" alt=""><span>صفقات</span></a><div class="search"><input placeholder="ابحث…" disabled></div><button class="ib">🛒 السلة<b>2</b></button></header>
+<section class="hero"><h1>كل اللي تحتاجه في مكان واحد!</h1><p>اكتشف أحدث الإلكترونيات والإكسسوارات.</p><button class="btn w">تسوّق الآن</button></section>
+<main><div class="bar"><button class="chip" aria-pressed="true">الكل</button><button class="chip" aria-pressed="false">إلكترونيات</button></div>
+<div class="grid"><article class="card"><div class="img" style="background:var(--card)">🎧<span class="tag">-30%</span></div><div class="info"><h3>سماعات بلوتوث</h3><div class="stars">★★★★★</div><div><span class="price">8.500 ر.ع.</span><span class="old">12.000 ر.ع.</span></div><button class="btn">أضف إلى السلة</button></div></article>
+<article class="card"><div class="img" style="background:var(--card)">🔋</div><div class="info"><h3>باور بانك</h3><div class="stars">★★★★☆</div><div><span class="price">9.000 ر.ع.</span></div><button class="btn">أضف إلى السلة</button></div></article></div>
+<p><a href="#" onclick="return false">رابط تجريبي</a></p></main><footer>© صفقات</footer></div></div></div>`;
+applyT($("#prev"),DR)}
+$("#adm").addEventListener("input",e=>{const t=e.target;if(!t.closest("#thm")||!t.dataset.k)return;const k=t.dataset.k;DR[k]=t.dataset.n?+t.value:t.value;
+if(k==="m"){const q=preset(DR.m,DR.L);["bg","fg","card","pri"].forEach(x=>DR[x]=q[x]);thmView();return}
+const s=$("#v_"+k);if(s)s.textContent=t.value;pvT()});
+$("#adm").addEventListener("change",async e=>{if(e.target.id!=="lgf")return;const f=e.target.files[0];if(!f)return;
+if(!f.type.startsWith("image/")||f.size>8e6){toast("اختر صورة بصيغة صحيحة وأقل من 8 ميغابايت.");return}
+try{const src=await resizeLogo(f);const L=await palette(src);if(!L)toast("تعذر استخراج ألوان واضحة. عدّل الألوان يدويًا.");
+DR=Object.assign(preset(DR.k||"light",L||DR.L),{logo:src,k:DR.k||"light"});thmView();toast(L?"تم تحليل اللوقو وتحديث الألوان (للمعاينة)":"تم تحديث اللوقو")}catch(x){toast("تعذر قراءة الصورة.")}});
+$("#adm").addEventListener("click",async e=>{const t=e.target.closest("button");if(!t||!t.closest("#thm"))return;const id=t.id;
+if(t.dataset.pr){DR=Object.assign(preset(t.dataset.pr,DR.L),{logo:DR.logo});thmView()}
+else if(id==="tsave"){if(js2("themeDraft",DR))toast("تم حفظ المسودة (لم تُنشر بعد)")}
+else if(id==="tpub"){const prev=TP;TP=cl(DR);if(js2("themePub",TP)){js2("themePrev",prev);js2("themeDraft",DR);applyStore();toast("تم نشر التصميم على المتجر ✓")}else TP=prev}
+else if(id==="trev"){const pv=ld("themePrev");if(!pv)return toast("لا يوجد تصميم سابق للاستعادة.");const cur=TP;TP=pv;DR=cl(TP);if(js2("themePub",TP)){js2("themePrev",cur);js2("themeDraft",DR);applyStore();thmView();toast("تمت استعادة التصميم السابق ✓")}else TP=cur}
+else if(id==="treset"){DR=preset("light",L0);thmView();toast("أُعيد الضبط لهوية اللوقو الأصلية (للمعاينة، انشر لتطبيقها)")}
+else if(id==="lgr"){DR=Object.assign(preset(DR.k||"light",L0),{logo:null});thmView()}
+else if(id==="lga"){const L=await palette(DR.logo||LOGO0);if(!L)return toast("تعذر استخراج الألوان.");DR=Object.assign(preset(DR.k||"light",L),{logo:DR.logo});thmView();toast("تم تحديث الألوان من اللوقو")}});
+
+const IG_DEF="https://www.instagram.com/safaqat.co/";
+function okIg(u){try{const x=new URL(u);return x.protocol==="https:"&&/(^|\.)instagram\.com$/.test(x.hostname)}catch(e){return false}}
+let IG=IG_DEF;try{const v=localStorage.getItem("ig");if(v&&okIg(v))IG=v}catch(e){}
+const dec=s=>String(s).replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,"\"").replace(/&amp;/g,"&");
+function saveIg(){const v=$("#igu").value.trim();if(!okIg(v))return toast("أدخل رابط إنستغرام صحيحًا يبدأ بـ https://www.instagram.com/");IG=v;try{localStorage.setItem("ig",v)}catch(e){return toast("تعذر الحفظ في هذا المتصفح")}toast("تم حفظ الرابط ✓")}
+function orderText(){const t=totals();const L=Object.keys(cart).map(id=>{const p=P.find(x=>x.id==id);return "- "+dec(p.n)+" × "+cart[id]+" = "+f3(p.p*cart[id])});
+return "طلب جديد من متجر صفقات:\n"+L.join("\n")+"\nالمجموع (بدون التوصيل): "+f3(t.sub-t.disc)+(coupon?" (بعد كوبون "+coupon+")":"")+"\nالاسم: \nالمحافظة: \nالعنوان: \nرقم الهاتف: "}
+async function copySum(){const x=orderText();try{await navigator.clipboard.writeText(x);toast("تم نسخ ملخص الطلب ✓")}catch(e){if(!$("#ta")){const a=document.createElement("textarea");a.id="ta";a.className="f";a.readOnly=true;a.rows=8;a.value=x;$("#cpy").after(a)}$("#ta").select();toast("حدّد النص وانسخه يدويًا")}}
+function igView(){const ids=Object.keys(cart);if(!ids.length){cartView();return}const t=totals();
+$("#cartBox").innerHTML=`<div class="row" style="border:0"><h2 style="margin:0">مراجعة الطلب</h2><button class="btn o" id="back">رجوع للسلة</button></div>`+
+ids.map(id=>{const p=P.find(x=>x.id==id);return `<div class="row"><div>${p.n}<br><small>${cart[id]} × ${f3(p.p)}</small></div><b>${f3(p.p*cart[id])}</b></div>`}).join("")+
+`<div class="sum"><div><span>المجموع الفرعي</span><span>${f3(t.sub)}</span></div>${t.disc?`<div><span>الخصم</span><span>-${f3(t.disc)}</span></div>`:""}<div><b>الإجمالي (بدون التوصيل)</b><b>${f3(t.sub-t.disc)}</b></div></div>
+<div class="note" role="alert"><b>مهم:</b> الانتقال إلى إنستغرام لا يرسل طلبك تلقائيًا. بعد فتح الحساب، أرسل لنا رسالة خاصة (Direct) تتضمن المنتجات والكميات واسمك ومحافظتك وعنوانك ورقم هاتفك. يمكنك نسخ ملخص الطلب ولصقه في الرسالة. لا يُعتبر الطلب مؤكدًا إلا بعد ردّنا عليك، وسنحدد تكلفة التوصيل معك هناك.</div>
+<button class="btn o" id="cpy">نسخ ملخص الطلب</button>
+<a class="btn ig" href="${IG}" target="_blank" rel="noopener noreferrer">`+IGSVG+` فتح إنستغرام لإرسال الطلب</a>`}
+const IGSVG=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>`;
+
+let preC=null,delC=null;
+let CATS=(()=>{const s=jl("cats")||[];P.forEach(p=>{if(!s.includes(p.c))s.push(p.c)});return s})();
+function addCat(){const i=$("#cn2");const n=i.value.trim();if(n.length<2)return toast("أدخل اسم التصنيف (حرفان على الأقل).");
+const nm=s=>dec(s).trim().toLowerCase();if(CATS.some(c=>nm(c)===n.toLowerCase()))return toast("هذا التصنيف موجود مسبقًا.");
+CATS.push(esc(n));js2("cats",CATS);admView();toast("تمت إضافة التصنيف ✓")}
+$("#adm").addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;const d=t.dataset;
+if(t.id==="cadd")addCat();
+else if(d.cp!==undefined){preC=d.cp;editId=null;pendImg=undefined;admView();document.getElementById("pfh").scrollIntoView({behavior:"smooth"});toast("أضف بيانات المنتج وسيُحفظ في هذا التصنيف")}
+else if(d.cd!==undefined){const c=d.cd;if(P.some(x=>x.c===c)){delC=null;admView();toast("انقل منتجات هذا التصنيف أو احذفها أولًا.");return}
+if(delC===c){CATS=CATS.filter(x=>x!==c);delC=null;js2("cats",CATS);if(preC===c)preC=null;admView();toast("تم حذف التصنيف")}else{delC=c;admView()}}});
+$("#adm").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="cn2")addCat()});
+const HASH="481782d0931ce016e3915f3f9fad34cf10b47708a121e16cb8c75fb6504b2cb0";
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const im=x=>x.img?`<img src="${x.img}" alt="" style="width:100%;height:100%;object-fit:cover">`:x.e;
+async function sha(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("saffqat:"+s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
+let admin=false,fails=0,lockUntil=0,editId=null,pendImg,delId=null;
+function clean(){for(const id in cart){const p=P.find(x=>x.id==id);if(!p||p.h||p.s<=0)delete cart[id];else if(cart[id]>p.s)cart[id]=p.s}
+if(cat!=="الكل"&&!P.some(p=>!p.h&&p.c===cat))cat="الكل"}
+const saveP=()=>{try{localStorage.setItem("products",JSON.stringify(P));return true}catch(e){toast("تعذر الحفظ: مساحة التخزين ممتلئة. صغّر الصور أو احذف منتجات.");return false}};
+const showAdm=()=>{$("#adm").classList.add("on");admin?admView():loginView()};
+const hideAdm=()=>{$("#adm").classList.remove("on");if(location.hash)location.hash=""};
+function loginView(){$("#admBox").innerHTML=`<div class="login"><h2>دخول الإدارة</h2><label>كلمة المرور</label><input class="f" id="pw" type="password" autocomplete="current-password"><div class="err" id="pe"></div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn" id="lg">دخول</button><button class="btn o" id="ex">رجوع للمتجر</button></div></div>`;$("#pw").focus()}
+async function login(){const pe=$("#pe");if(Date.now()<lockUntil){pe.textContent="محاولات كثيرة. انتظر 30 ثانية ثم أعد المحاولة.";return}
+if(!(window.crypto&&crypto.subtle)){pe.textContent="المتصفح لا يدعم التحقق الآمن.";return}
+const v=await sha($("#pw").value.trim());
+if(v===HASH){admin=true;fails=0;admView()}else{if(++fails>=5){lockUntil=Date.now()+30000;fails=0}pe.textContent="كلمة المرور غير صحيحة.";$("#pw").value=""}}
+function pvDraw(){const e=P.find(x=>x.id===editId);const s=pendImg===undefined?(e&&e.img):pendImg;$("#pv").innerHTML=s?`<img src="${s}" alt="" style="width:100%;height:100%;object-fit:cover">`:"بدون صورة"}
+function resize(f){return new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,700/Math.max(i.width,i.height));const c=document.createElement("canvas");c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);c.getContext("2d").drawImage(i,0,0,c.width,c.height);ok(c.toDataURL("image/jpeg",.8))};i.onerror=no;i.src=r.result};r.onerror=no;r.readAsDataURL(f)})}
+function admView(){const e=P.find(x=>x.id===editId)||{};const cs=[...new Set([...CATS,...P.map(x=>x.c)])];const vis=P.filter(x=>!x.h).length;
+$("#admBox").innerHTML=`<div class="admh"><h2 style="margin:0">لوحة التحكم</h2><div style="display:flex;gap:8px"><button class="btn o" id="ex">عرض المتجر</button><button class="btn o" id="lo">تسجيل الخروج</button></div></div>
+<div class="note">التعديلات تُحفظ في هذا المتصفح فقط ولن تظهر لزوار آخرين حتى يُربط المتجر بخادم وقاعدة بيانات.</div>
+<div class="stats"><div><b>${P.length}</b>إجمالي المنتجات</div><div><b>${vis}</b>ظاهر في المتجر</div><div><b>${P.length-vis}</b>مخفي</div><div><b>${P.filter(x=>x.s<=0).length}</b>نفد مخزونه</div></div>
+<div id="thm"></div>
+<h3>إعدادات الطلب</h3><div class="pf"><div class="full"><label>رابط حساب إنستغرام</label><input class="f" id="igu" dir="ltr" value="${IG}"></div><div class="full" style="margin-top:10px;display:flex;gap:8px"><button class="btn" id="sg">حفظ الرابط</button><button class="btn o" id="sgr">استعادة الرابط الافتراضي</button></div></div>
+<h3>التصنيفات</h3><div class="pf"><div class="full" style="display:flex;gap:8px"><input class="f" id="cn2" placeholder="اسم تصنيف جديد"><button class="btn" id="cadd">إضافة تصنيف</button></div>
+<div class="full tbw" style="margin-top:10px">${cs.length?`<table class="tb"><tr><th>التصنيف</th><th>عدد المنتجات</th><th></th></tr>${cs.map(c=>`<tr><td>${c}</td><td>${P.filter(x=>x.c===c).length}</td><td style="white-space:nowrap"><button class="btn o" data-cp="${c}">إضافة منتج فيه</button> <button class="btn o" data-cd="${c}" style="color:var(--red)">${delC===c?"تأكيد الحذف":"حذف"}</button></td></tr>`).join("")}</table>`:`<div class="empty">لا توجد تصنيفات. أضف أول تصنيف.</div>`}</div></div>
+<h3 id="pfh">${editId?"تعديل المنتج":"إضافة منتج جديد"}</h3>
+<div class="pf"><div><label>اسم المنتج</label><input class="f" id="an" value="${e.n||""}"></div>
+<div><label>التصنيف</label><select class="f" id="ac">${cs.length?cs.map(c=>`<option value="${c}" ${(e.c||preC||cs[0])===c?"selected":""}>${c}</option>`).join(""):`<option value="عام">عام</option>`}</select></div>
+<div><label>السعر (ر.ع.)</label><input class="f" id="ap" type="number" step="0.001" min="0" value="${e.p||""}"></div>
+<div><label>السعر قبل الخصم (اختياري)</label><input class="f" id="ao" type="number" step="0.001" min="0" value="${e.o||""}"></div>
+<div><label>الكمية في المخزون</label><input class="f" id="as" type="number" min="0" value="${e.s??""}"></div>
+<div><label style="display:flex;gap:8px;align-items:center;margin-top:34px"><input type="checkbox" id="ah" ${e.h?"":"checked"}> ظاهر في المتجر</label></div>
+<div class="full"><label>الوصف</label><textarea class="f" id="ad" rows="3">${e.d||""}</textarea></div>
+<div class="full" style="display:flex;gap:14px;align-items:center;margin-top:10px"><div class="pv" id="pv"></div><div><input type="file" id="af" accept="image/*"><br><button class="btn o" id="ri" style="margin-top:8px">حذف الصورة</button></div></div>
+<div class="full" style="display:flex;gap:8px;margin-top:14px"><button class="btn" id="sv">${editId?"حفظ التعديلات":"إضافة المنتج"}</button>${editId?`<button class="btn o" id="cn">إلغاء</button>`:""}</div></div>
+<h3>المنتجات</h3>${P.length?`<div class="tbw"><table class="tb"><tr><th></th><th>الاسم</th><th>السعر</th><th>المخزون</th><th>الحالة</th><th></th></tr>${P.map(x=>`<tr><td><div class="th">${im(x)}</div></td><td>${x.n}</td><td>${f3(x.p)}</td><td>${x.s}</td><td>${x.h?"مخفي":"ظاهر"}</td><td style="white-space:nowrap"><button class="btn o" data-ed="${x.id}">تعديل</button> <button class="btn o" data-hd="${x.id}">${x.h?"إظهار":"إخفاء"}</button> <button class="btn o" data-dl="${x.id}" style="color:var(--red)">${delId===x.id?"تأكيد الحذف":"حذف"}</button></td></tr>`).join("")}</table></div>`:`<div class="empty">لا توجد منتجات. أضف أول منتج من النموذج أعلاه.</div>`}`;pvDraw();thmView()}
+function saveProd(){const n=$("#an").value.trim(),p=parseFloat($("#ap").value),o=parseFloat($("#ao").value),s=parseInt($("#as").value,10);
+if(n.length<2)return toast("أدخل اسم المنتج.");if(!(p>0))return toast("أدخل سعرًا صحيحًا أكبر من صفر.");
+if(o&&o<=p)return toast("السعر قبل الخصم يجب أن يكون أكبر من السعر الحالي.");if(!(s>=0))return toast("أدخل كمية المخزون.");
+const old=P.find(x=>x.id===editId);const d={n:esc(n),d:esc($("#ad").value.trim()),p,o:o>0?o:undefined,s,c:$("#ac").value||"عام",h:!$("#ah").checked};
+if(pendImg!==undefined)d.img=pendImg||undefined;
+const bk=JSON.stringify(P);
+if(old)Object.assign(old,d);else P.unshift({id:Date.now(),r:0,rc:0,b:0,t:Date.now(),e:"📦",bg:"#e8eef7",...d});
+if(!saveP()){P=JSON.parse(bk);return}
+editId=null;pendImg=undefined;preC=null;render();admView();toast("تم الحفظ ✓")}
+$("#adm").addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;const d=t.dataset,id=t.id;
+if(id==="lg")login();else if(id==="ex")hideAdm();else if(id==="sg")saveIg();else if(id==="sgr"){$("#igu").value=IG_DEF;saveIg()}else if(id==="lo"){admin=false;hideAdm()}
+else if(id==="sv")saveProd();else if(id==="cn"){editId=null;pendImg=undefined;admView()}
+else if(id==="ri"){pendImg=null;pvDraw()}
+else if(d.ed){editId=+d.ed;pendImg=undefined;delId=null;admView();$("#adm").scrollTo({top:0,behavior:"smooth"})}
+else if(d.hd){const x=P.find(v=>v.id==d.hd);x.h=!x.h;saveP();render();admView()}
+else if(d.dl){const i=+d.dl;if(delId===i){P=P.filter(v=>v.id!==i);delId=null;if(editId===i)editId=null;saveP();render();toast("تم حذف المنتج")}else delId=i;admView()}});
+$("#adm").addEventListener("change",async e=>{if(e.target.id!=="af")return;const f=e.target.files[0];if(!f)return;
+if(!f.type.startsWith("image/")||f.size>8e6){toast("اختر صورة بصيغة صحيحة وأقل من 8 ميغابايت.");e.target.value="";return}
+try{pendImg=await resize(f);pvDraw()}catch(x){toast("تعذر قراءة الصورة.")}});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="pw")login();if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==="a"){e.preventDefault();showAdm()}});
+let fc=0,ft;$("#ft").addEventListener("click",()=>{fc++;clearTimeout(ft);ft=setTimeout(()=>fc=0,2500);if(fc>=5){fc=0;showAdm()}});
+window.addEventListener("hashchange",()=>{location.hash==="#admin"?showAdm():$("#adm").classList.remove("on")});
+if(location.hash==="#admin")showAdm();
+applyStore();
+render();
+</script>
+</body>
+</html>
